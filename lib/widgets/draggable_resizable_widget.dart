@@ -5,10 +5,12 @@ class DraggableResizableWidget extends StatefulWidget {
     Key? key,
     required this.child,
     required this.isNotActive,
+    required this.onPressed,
   }) : super(key: key);
 
   final Widget child;
   final bool isNotActive;
+  final void Function() onPressed;
   @override
   _ResizebleWidgetState createState() => _ResizebleWidgetState();
 }
@@ -48,9 +50,9 @@ class _ResizebleWidgetState extends State<DraggableResizableWidget> {
             height: height,
             width: width,
             alignment: Alignment.center,
-            // color: Colors.red[100],
-            color: Colors.white,
-            child: widget.child,
+            color: Colors.red[100],
+            // color: Colors.white,
+            child: Wrap(children: [widget.child]),
           ),
         ),
         // top left
@@ -108,32 +110,53 @@ class _ResizebleWidgetState extends State<DraggableResizableWidget> {
         ),
         // top right
         Positioned(
-          top: top - ballDiameter / 2,
-          left: left + width - ballDiameter / 2,
-          child: ManipulatingBall(
-            isBallVisible: !widget.isNotActive,
-            onDrag: (dx, dy) {
-              var mid = (dx + (dy * -1)) / 2;
-              cumulativeMid += 2 * mid;
-              if (cumulativeMid >= discreteStepSize) {
-                setState(() {
-                  var newHeight = height + discreteStepSize;
-                  height = newHeight > 0 ? newHeight : 0;
-                  var newWidth = width + discreteStepSize;
-                  width = newWidth > 0 ? newWidth : 0;
-                  cumulativeMid = 0;
-                });
-              } else if (cumulativeMid <= -discreteStepSize) {
-                setState(() {
-                  var newHeight = height - discreteStepSize;
-                  height = newHeight > 0 ? newHeight : 0;
-                  var newWidth = width - discreteStepSize;
-                  width = newWidth > 0 ? newWidth : 0;
-                  cumulativeMid = 0;
-                });
-              }
-            },
-          ),
+          // top: top - ballDiameter / 2,
+          // left: left + width - ballDiameter / 2,
+          top: top - ballDiameter,
+          left: left + width - ballDiameter,
+          child: !widget.isNotActive
+              ? Container(
+                  width: ballDiameter + 20,
+                  height: ballDiameter + 20,
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withOpacity(0.8),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: IconButton(
+                      onPressed: widget.onPressed,
+                      icon: const Icon(
+                        Icons.edit,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                )
+              : Container(child: null),
+          //  ManipulatingBall(
+          //   isBallVisible: !widget.isNotActive,
+          //   onDrag: (dx, dy) {
+          //     var mid = (dx + (dy * -1)) / 2;
+          //     cumulativeMid += 2 * mid;
+          //     if (cumulativeMid >= discreteStepSize) {
+          //       setState(() {
+          //         var newHeight = height + discreteStepSize;
+          //         height = newHeight > 0 ? newHeight : 0;
+          //         var newWidth = width + discreteStepSize;
+          //         width = newWidth > 0 ? newWidth : 0;
+          //         cumulativeMid = 0;
+          //       });
+          //     } else if (cumulativeMid <= -discreteStepSize) {
+          //       setState(() {
+          //         var newHeight = height - discreteStepSize;
+          //         height = newHeight > 0 ? newHeight : 0;
+          //         var newWidth = width - discreteStepSize;
+          //         width = newWidth > 0 ? newWidth : 0;
+          //         cumulativeMid = 0;
+          //       });
+          //     }
+          //   },
+          // ),
         ),
         // center right
         Positioned(

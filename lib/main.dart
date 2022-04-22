@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:meme_generator/utils/save_image.dart';
 import 'package:meme_generator/widgets/draggable_resizable_widget.dart';
+import 'package:meme_generator/widgets/stack_wrapper.dart';
 import 'package:meme_generator/widgets/text_wrapper.dart';
 
 void main() {
@@ -53,6 +55,7 @@ class MyHomePage extends StatefulHookWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final GlobalKey _globalKey = GlobalKey();
+  final GlobalKey _globalStackKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -63,44 +66,32 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     final _isContainerActive = useState(false);
+    final _textWidgets = useState<List<Widget>>([]);
+    void addTextWidget() {
+      _textWidgets.value.add(TextWrapper(
+        isContainerActive: _isContainerActive,
+      ));
+
+      print('Hitting');
+      _globalKey.currentContext!
+          .findRenderObject()!
+          .markNeedsCompositingBitsUpdate();
+      print('Hitting 2');
+    }
+
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: RepaintBoundary(
-        key: _globalKey,
-        child: LayoutBuilder(
-          builder: (context, size) {
-            double dimensions =
-                size.maxWidth > size.maxHeight ? size.maxHeight : size.maxWidth;
-            return Center(
-              child: GestureDetector(
-                onTap: () => _isContainerActive.value = true,
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    image: DecorationImage(
-                      image: NetworkImage(
-                        'https://picsum.photos/id/237/200/300',
-                      ),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  padding: const EdgeInsets.all(8),
-                  margin: const EdgeInsets.all(8),
-                  child: Stack(
-                    // mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      TextWrapper(isContainerActive: _isContainerActive),
-                      TextWrapper(isContainerActive: _isContainerActive),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
+      body: GestureDetector(
+        onTap: () => {print("hello"), _isContainerActive.value = true},
+        child: RepaintBoundary(
+          key: _globalKey,
+          child: StackWrapper(
+            textWidgets: _textWidgets,
+          ),
         ),
       ),
 
@@ -116,18 +107,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 saveImage(context: context, globalKey: _globalKey);
               },
               tooltip: 'Save',
+              child: const Icon(Icons.save),
+            ),
+            FloatingActionButton(
+              onPressed: () {
+                addTextWidget();
+              },
+              tooltip: 'Add Text',
               child: const Icon(Icons.add),
             ),
-            if (_isContainerActive.value == false)
-              FloatingActionButton(
-                onPressed: () async {
-                  _isContainerActive.value = true;
-                  await Future.delayed(Duration(milliseconds: 500));
-                  saveImage(context: context, globalKey: _globalKey);
-                },
-                tooltip: 'Edit text',
-                child: const Icon(Icons.edit),
-              ),
           ],
         ),
       ),
