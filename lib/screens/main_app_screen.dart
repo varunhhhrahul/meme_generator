@@ -35,6 +35,12 @@ class _HomeScreenState extends State<MainAppScreen> {
       });
     }
 
+    void removeTextWidget(String textId) {
+      setState(() {
+        _textWidgets.value.removeWhere((element) => element == textId);
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Meme Generator'),
@@ -44,6 +50,7 @@ class _HomeScreenState extends State<MainAppScreen> {
         child: StackWrapper(
           textWidgets: _textWidgets,
           isContainerActive: _isContainerActive,
+          removeTextWidget: removeTextWidget,
         ),
       ),
 

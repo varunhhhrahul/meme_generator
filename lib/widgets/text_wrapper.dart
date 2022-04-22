@@ -5,10 +5,12 @@ import 'package:meme_generator/widgets/draggable_resizable_widget.dart';
 class TextWrapper extends HookWidget {
   final ValueNotifier<bool> isContainerActive;
   final String textId;
+  final void Function() removeTextWidget;
   const TextWrapper({
     Key? key,
     required this.isContainerActive,
     required this.textId,
+    required this.removeTextWidget,
   }) : super(key: key);
 
   @override
@@ -25,42 +27,42 @@ class TextWrapper extends HookWidget {
     void _openBottomSheet() {
       _textController.text = _currentText.value;
       showModalBottomSheet<void>(
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(15.0),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(15.0),
+          ),
+        ),
+        backgroundColor: Colors.white,
+        context: context,
+        isScrollControlled: true,
+        builder: (context) => Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 24),
+          child: Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                TextField(
+                  decoration: const InputDecoration(hintText: 'Text'),
+                  autofocus: true,
+                  controller: _textController,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    _currentText.value = _textController.text;
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Update'),
+                )
+              ],
             ),
           ),
-          backgroundColor: Colors.white,
-          context: context,
-          isScrollControlled: true,
-          builder: (context) => Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 18, vertical: 24),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).viewInsets.bottom,
-                      ),
-                      child: TextField(
-                        decoration: const InputDecoration(hintText: 'Text'),
-                        autofocus: true,
-                        controller: _textController,
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        _currentText.value = _textController.text;
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Update'),
-                    )
-                  ],
-                ),
-              ));
+        ),
+      );
     }
 
     return GestureDetector(
@@ -72,6 +74,7 @@ class TextWrapper extends HookWidget {
         isNotActive: _isNotActive.value,
         onPressed: _openBottomSheet,
         child: Text(_currentText.value),
+        removeTextWidget: removeTextWidget,
       ),
     );
   }
