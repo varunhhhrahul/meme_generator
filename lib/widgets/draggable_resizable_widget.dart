@@ -50,9 +50,13 @@ class _ResizebleWidgetState extends State<DraggableResizableWidget> {
             height: height,
             width: width,
             alignment: Alignment.center,
-            color: Colors.red[100],
-            // color: Colors.white,
-            child: Wrap(children: [widget.child]),
+            // color: Colors.red[100],
+            color: Colors.white,
+            child: Wrap(
+              children: [
+                widget.child,
+              ],
+            ),
           ),
         ),
         // top left

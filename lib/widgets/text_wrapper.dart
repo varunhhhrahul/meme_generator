@@ -4,8 +4,12 @@ import 'package:meme_generator/widgets/draggable_resizable_widget.dart';
 
 class TextWrapper extends HookWidget {
   final ValueNotifier<bool> isContainerActive;
-  const TextWrapper({Key? key, required this.isContainerActive})
-      : super(key: key);
+  final String textId;
+  const TextWrapper({
+    Key? key,
+    required this.isContainerActive,
+    required this.textId,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

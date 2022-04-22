@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:meme_generator/widgets/text_wrapper.dart';
 
 class StackWrapper extends HookWidget {
-  final ValueNotifier<List<Widget>> textWidgets;
-  const StackWrapper({Key? key, required this.textWidgets}) : super(key: key);
+  final ValueNotifier<List<String>> textWidgets;
+  final ValueNotifier<bool> isContainerActive;
+
+  const StackWrapper({
+    Key? key,
+    required this.textWidgets,
+    required this.isContainerActive,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return GestureDetector(
+      onTap: () => isContainerActive.value = true,
       child: Container(
+        width: double.infinity,
+        height: double.infinity,
         decoration: const BoxDecoration(
           color: Colors.white,
           image: DecorationImage(
@@ -21,11 +31,13 @@ class StackWrapper extends HookWidget {
         padding: const EdgeInsets.all(8),
         margin: const EdgeInsets.all(8),
         child: Stack(
-          // mainAxisSize: MainAxisSize.min,
-
           children: [
             for (int i = 0; i < textWidgets.value.length; i++)
-              Container(color: Colors.red, child: textWidgets.value[i])
+              TextWrapper(
+                isContainerActive: isContainerActive,
+                textId: textWidgets.value[i],
+              )
+            // textWidgets.value[i],
             // ...textWidgets.value
             //     .map((e) => LayoutBuilder(builder: (context, size) {
             //           return e;
