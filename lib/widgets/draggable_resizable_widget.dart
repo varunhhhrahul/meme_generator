@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:meme_generator/constants/models/text.dart';
+import 'package:meme_generator/constants/models/text_element.dart';
+
+import '../constants/models/text_element.dart';
 
 class DraggableResizableWidget extends StatefulWidget {
   const DraggableResizableWidget({
@@ -8,12 +10,27 @@ class DraggableResizableWidget extends StatefulWidget {
     required this.isNotActive,
     required this.onPressed,
     required this.removeTextWidget,
+    required this.updateTextWidget,
+    required this.textElement,
   }) : super(key: key);
 
   final Widget child;
   final bool isNotActive;
+  final TextElement textElement;
   final void Function() onPressed;
   final void Function() removeTextWidget;
+  final void Function(
+    String, {
+    double? cumulativeDx,
+    double? cumulativeDy,
+    double? cumulativeMid,
+    double? height,
+    String? id,
+    String? text,
+    double? width,
+    double? top,
+    double? left,
+  }) updateTextWidget;
   @override
   _ResizebleWidgetState createState() => _ResizebleWidgetState();
 }

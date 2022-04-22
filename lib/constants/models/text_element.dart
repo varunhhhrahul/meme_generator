@@ -6,6 +6,8 @@ class TextElement {
   final double cumulativeDy;
   final double cumulativeDx;
   final double cumulativeMid;
+  final double top;
+  final double left;
 
   TextElement({
     required this.id,
@@ -15,6 +17,8 @@ class TextElement {
     this.cumulativeDy = 0,
     this.cumulativeDx = 0,
     this.cumulativeMid = 0,
+    this.top = 20,
+    this.left = 50,
   });
 
   TextElement.copy(
@@ -26,6 +30,8 @@ class TextElement {
     double? cumulativeDy,
     double? cumulativeDx,
     double? cumulativeMid,
+    double? top,
+    double? left,
   }) : this(
           id: id ?? copy.id,
           text: text ?? copy.text,
@@ -34,6 +40,8 @@ class TextElement {
           cumulativeDy: cumulativeDy ?? copy.cumulativeDy,
           cumulativeDx: cumulativeDx ?? copy.cumulativeDx,
           cumulativeMid: cumulativeMid ?? copy.cumulativeMid,
+          top: top ?? copy.top,
+          left: left ?? copy.left,
         );
 
   Map<String, dynamic> toMap() {
@@ -45,6 +53,8 @@ class TextElement {
       'cumulativeDy': cumulativeDy,
       'cumulativeDx': cumulativeDx,
       'cumulativeMid': cumulativeMid,
+      'top': top,
+      'left': left,
     };
   }
 
@@ -52,11 +62,13 @@ class TextElement {
     return TextElement(
       id: json['id'] ?? '',
       text: json['text'] ?? '',
-      height: json['height']?.toDouble() ?? 0.0,
-      width: json['width']?.toDouble() ?? 0.0,
+      height: json['height']?.toDouble() ?? 100,
+      width: json['width']?.toDouble() ?? 200,
       cumulativeDy: json['cumulativeDy']?.toDouble() ?? 0.0,
       cumulativeDx: json['cumulativeDx']?.toDouble() ?? 0.0,
       cumulativeMid: json['cumulativeMid']?.toDouble() ?? 0.0,
+      top: json['top']?.toDouble() ?? 20,
+      left: json['left']?.toDouble() ?? 50,
     );
   }
 }
