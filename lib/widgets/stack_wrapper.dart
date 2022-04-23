@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:meme_generator/helpers/logger.dart';
 import 'package:meme_generator/provider/app_provider.dart';
 import 'package:meme_generator/widgets/text_wrapper.dart';
 
@@ -18,10 +17,6 @@ class StackWrapper extends HookConsumerWidget {
     final selectedBackground = ref.watch(appProvider).selectedBackground;
     final textWidgets = ref.watch(appProvider).textWidgets;
     useEffect(() {
-      logger.d("********* StackWrapper *********");
-      logger.d(
-          'StackWrapper build: ${textWidgets.map((e) => e.toMap()).toList()}');
-      logger.d('*******************************');
       return null;
     }, [textWidgets.length]);
     return GestureDetector(
@@ -51,12 +46,6 @@ class StackWrapper extends HookConsumerWidget {
                   ),
                 )
                 .toList(),
-            // textWidgets.value[i],
-            // ...textWidgets.value
-            //     .map((e) => LayoutBuilder(builder: (context, size) {
-            //           return e;
-            //         }))
-            //     .toList()
           ],
         ),
       ),

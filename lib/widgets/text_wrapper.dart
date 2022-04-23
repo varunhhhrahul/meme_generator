@@ -23,7 +23,6 @@ class TextWrapper extends HookConsumerWidget {
     final _isNotActive = useState(false);
     final textWidgets = ref.watch(appProvider).textWidgets;
     final _textController = useTextEditingController(text: 'This is a text');
-    // final _currentText = useState('This is a text');
     useEffect(() {
       if (_isNotActive.value == false) {
         _isNotActive.value = isContainerActive.value;
@@ -32,7 +31,6 @@ class TextWrapper extends HookConsumerWidget {
     }, [isContainerActive.value]);
     void _openBottomSheet() {
       _textController.text = textElement.text;
-      // _currentText.value;
       showModalBottomSheet<void>(
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(

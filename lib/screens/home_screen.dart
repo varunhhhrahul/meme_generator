@@ -1,17 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:meme_generator/constants/models/background_element.dart';
 import 'package:meme_generator/constants/routes.dart';
-import 'package:meme_generator/helpers/logger.dart';
 import 'package:meme_generator/provider/app_provider.dart';
 import 'package:meme_generator/screens/main_app_screen.dart';
 import 'package:meme_generator/utils/json_utils.dart';
 import 'package:meme_generator/widgets/bounce_animation.dart';
 import 'package:focus_detector/focus_detector.dart';
-import 'package:uuid/uuid.dart';
 
 class HomeScreen extends HookConsumerWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -34,6 +30,7 @@ class HomeScreen extends HookConsumerWidget {
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 20),
           child: GridView.builder(
+            key: const Key('GridViewBuilder'),
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 200,

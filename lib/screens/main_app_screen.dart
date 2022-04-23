@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:meme_generator/helpers/logger.dart';
 import 'package:meme_generator/provider/app_provider.dart';
 import 'package:meme_generator/utils/json_utils.dart';
-import 'package:uuid/uuid.dart';
 
-import '../constants/models/text_element.dart';
 import '../utils/save_image.dart';
 import '../widgets/stack_wrapper.dart';
 
@@ -40,7 +37,10 @@ class MainAppScreen extends HookConsumerWidget {
             onPressed: () async {
               _isContainerActive.value = true;
               final path = await saveImage(
-                  context: context, globalKey: _globalKey, edit: true);
+                context: context,
+                globalKey: _globalKey,
+                edit: true,
+              );
               await editTemplate(
                 id: templateId!,
                 backgroundElement: selectedBackground,
