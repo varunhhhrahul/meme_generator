@@ -63,6 +63,7 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 flutter_app_name:
   name: "Meme Generator"
+  id: "it.in4matic.flutter_app_name"
 # The following section is specific to Flutter packages.
 flutter:
   # The following line ensures that the Material Icons font is
