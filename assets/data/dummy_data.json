@@ -1,0 +1,103 @@
+{
+  "templates": [
+    {
+      "id": "1",
+      "previewUrl": null,
+      "backgroundElement": {
+        "id": "308fdd71-38bb-4da1-a347-46153627ae6f",
+        "url": "https://picsum.photos/id/234/200/300",
+        "height": "Infinity",
+        "width": "Infinity",
+        "top": 0.0,
+        "left": 0.0,
+        "type": "ElementType.background"
+      },
+      "textElements": []
+    },
+    {
+      "id": "2",
+      "previewUrl": null,
+      "backgroundElement": {
+        "id": "308fdd71-38bb-4da1-a347-46153627ae6e",
+        "url": "https://picsum.photos/id/235/200/300",
+        "height": "Infinity",
+        "width": "Infinity",
+        "top": 0.0,
+        "left": 0.0,
+        "type": "ElementType.background"
+      },
+      "textElements": []
+    },
+    {
+      "id": "3",
+      "previewUrl": null,
+      "backgroundElement": {
+        "id": "308fdd71-38bb-4da1-a347-46153627ae6d",
+        "url": "https://picsum.photos/id/236/200/300",
+        "height": "Infinity",
+        "width": "Infinity",
+        "top": 0.0,
+        "left": 0.0,
+        "type": "ElementType.background"
+      },
+      "textElements": []
+    },
+    {
+      "id": "4",
+      "previewUrl": null,
+      "backgroundElement": {
+        "id": "308fdd71-38bb-4da1-a347-46153627ae6c",
+        "url": "https://picsum.photos/id/237/200/300",
+        "height": "Infinity",
+        "width": "Infinity",
+        "top": 0.0,
+        "left": 0.0,
+        "type": "ElementType.background"
+      },
+      "textElements": []
+    },
+    {
+      "id": "5",
+      "previewUrl": null,
+      "backgroundElement": {
+        "id": "308fdd71-38bb-4da1-a347-46153627ae6b",
+        "url": "https://picsum.photos/id/238/200/300",
+        "height": "Infinity",
+        "width": "Infinity",
+        "top": 0.0,
+        "left": 0.0,
+        "type": "ElementType.background"
+      },
+      "textElements": []
+    },
+
+    {
+      "id": "6",
+      "previewUrl": null,
+      "backgroundElement": {
+        "id": "308fdd71-38bb-4da1-a347-46153627ae6a",
+        "url": "https://picsum.photos/id/239/200/300",
+        "height": "Infinity",
+        "width": "Infinity",
+        "top": 0.0,
+        "left": 0.0,
+        "type": "ElementType.background"
+      },
+      "textElements": []
+    },
+    {
+      "id": "7",
+      "previewUrl": null,
+      "backgroundElement": {
+        "id": "308fdd71-38bb-4da1-a347-46153627ae6g",
+        "url": "https://picsum.photos/id/300/200/300",
+        "height": "Infinity",
+        "width": "Infinity",
+        "top": 0.0,
+        "left": 0.0,
+        "type": "ElementType.background"
+      },
+      "textElements": []
+    }
+  ]
+}

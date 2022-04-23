@@ -1,76 +1,79 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meme_generator/constants/models/text_element.dart';
+import 'package:meme_generator/helpers/logger.dart';
+import 'package:meme_generator/provider/app_provider.dart';
 
 import '../constants/models/text_element.dart';
 
-class DraggableResizableWidget extends StatefulWidget {
+const ballDiameter = 15.0;
+const discreteStepSize = 50;
+
+class DraggableResizableWidget extends HookConsumerWidget {
   const DraggableResizableWidget({
     Key? key,
     required this.child,
     required this.isNotActive,
     required this.onPressed,
-    required this.removeTextWidget,
-    required this.updateTextWidget,
     required this.textElement,
+    required this.widgetTop,
+    required this.widgetLeft,
+    required this.index,
+    required this.isNotActiveNotifier,
   }) : super(key: key);
 
   final Widget child;
   final bool isNotActive;
   final TextElement textElement;
   final void Function() onPressed;
-  final void Function() removeTextWidget;
-  final void Function(
-    String, {
-    double? cumulativeDx,
-    double? cumulativeDy,
-    double? cumulativeMid,
-    double? height,
-    String? id,
-    String? text,
-    double? width,
-    double? top,
-    double? left,
-  }) updateTextWidget;
-  @override
-  _ResizebleWidgetState createState() => _ResizebleWidgetState();
-}
-
-const ballDiameter = 15.0;
-const discreteStepSize = 50;
-
-class _ResizebleWidgetState extends State<DraggableResizableWidget> {
-  double height = 100;
-  double width = 200;
-
-  double top = 20;
-  double left = 50;
-
-  double cumulativeDy = 0;
-  double cumulativeDx = 0;
-  double cumulativeMid = 0;
-
-  void onDrag(double dx, double dy) {
-    var newHeight = height + dy;
-    var newWidth = width + dx;
-
-    setState(() {
-      height = newHeight > 0 ? newHeight : 0;
-      width = newWidth > 0 ? newWidth : 0;
-    });
-  }
+  final double widgetTop;
+  final double widgetLeft;
+  final int index;
+  final ValueNotifier<bool> isNotActiveNotifier;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final updateTextWidget = ref.read(appProvider.notifier).updateTextWidget;
+    final textWidgets = ref.read(appProvider).textWidgets;
+    final height = useState(textElement.height);
+    final width = useState(textElement.width);
+    final top = useState(textElement.top);
+    final left = useState(textElement.left);
+    final cumulativeDy = useState(textElement.cumulativeDy);
+    final cumulativeDx = useState(textElement.cumulativeDx);
+    final cumulativeMid = useState(textElement.cumulativeMid);
+
+    useEffect(() {
+      height.value = textElement.height;
+      width.value = textElement.width;
+      top.value = textElement.top;
+      left.value = textElement.left;
+      cumulativeDy.value = textElement.cumulativeDy;
+      cumulativeDx.value = textElement.cumulativeDx;
+      cumulativeMid.value = textElement.cumulativeMid;
+      return null;
+    }, [textElement]);
+    useEffect(() {
+      height.value = textElement.height;
+      width.value = textElement.width;
+      top.value = textElement.top;
+      left.value = textElement.left;
+      cumulativeDy.value = textElement.cumulativeDy;
+      cumulativeDx.value = textElement.cumulativeDx;
+      cumulativeMid.value = textElement.cumulativeMid;
+      return null;
+    }, []);
     return Stack(
       children: <Widget>[
         Positioned(
-          top: top,
-          left: left,
+          top: top.value,
+          left: left.value,
           child: Container(
-            height: height,
-            width: width,
+            height: height.value,
+            width: width.value,
             alignment: Alignment.center,
-            decoration: !widget.isNotActive
+            decoration: !isNotActive
                 ? BoxDecoration(
                     color: Colors.white,
                     border: Border.all(
@@ -81,21 +84,18 @@ class _ResizebleWidgetState extends State<DraggableResizableWidget> {
                 : const BoxDecoration(
                     color: Colors.white,
                   ),
-
-            // color: Colors.red[100],
-            // color: Colors.white,
             child: Wrap(
               children: [
-                widget.child,
+                child,
               ],
             ),
           ),
         ),
         // top left
         Positioned(
-          top: top - ballDiameter,
-          left: left - ballDiameter,
-          child: !widget.isNotActive
+          top: top.value - ballDiameter,
+          left: left.value - ballDiameter,
+          child: !isNotActive
               ? Container(
                   width: ballDiameter + 15,
                   height: ballDiameter + 15,
@@ -105,7 +105,13 @@ class _ResizebleWidgetState extends State<DraggableResizableWidget> {
                   ),
                   child: Center(
                     child: IconButton(
-                      onPressed: widget.removeTextWidget,
+                      onPressed: () {
+                        isNotActiveNotifier.value = true;
+
+                        ref
+                            .watch(appProvider.notifier)
+                            .removeTextWidget(textElement.id);
+                      },
                       icon: const Icon(
                         Icons.delete,
                         color: Colors.white,
@@ -115,64 +121,40 @@ class _ResizebleWidgetState extends State<DraggableResizableWidget> {
                   ),
                 )
               : Container(child: null),
-          // top: top - ballDiameter / 2,
-          // left: left - ballDiameter / 2,
-          // child: ManipulatingBall(
-          //   isBallVisible: !widget.isNotActive,
-          //   onDrag: (dx, dy) {
-          //     var mid = (dx + dy) / 2;
-          //     cumulativeMid -= 2 * mid;
-          //     if (cumulativeMid >= discreteStepSize) {
-          //       setState(() {
-          //         var newHeight = height + discreteStepSize;
-          //         height = newHeight > 0 ? newHeight : 0;
-          //         var newWidth = width + discreteStepSize;
-          //         width = newWidth > 0 ? newWidth : 0;
-          //         cumulativeMid = 0;
-          //       });
-          //     } else if (cumulativeMid <= -discreteStepSize) {
-          //       setState(() {
-          //         var newHeight = height - discreteStepSize;
-          //         height = newHeight > 0 ? newHeight : 0;
-          //         var newWidth = width - discreteStepSize;
-          //         width = newWidth > 0 ? newWidth : 0;
-          //         cumulativeMid = 0;
-          //       });
-          //     }
-          //   },
-          // ),
         ),
         // top middle
         Positioned(
-          top: top - ballDiameter / 2,
-          left: left + width / 2 - ballDiameter / 2,
+          top: top.value - ballDiameter / 2,
+          left: left.value + width.value / 2 - ballDiameter / 2,
           child: ManipulatingBall(
-            isBallVisible: !widget.isNotActive,
+            isBallVisible: !isNotActive,
             onDrag: (dx, dy) {
-              cumulativeDy -= dy;
-              if (cumulativeDy >= discreteStepSize) {
-                setState(() {
-                  var newHeight = height + discreteStepSize;
-                  height = newHeight > 0 ? newHeight : 0;
-                  cumulativeDy = 0;
-                });
-              } else if (cumulativeDy <= -discreteStepSize) {
-                setState(() {
-                  var newHeight = height - discreteStepSize;
-                  height = newHeight > 0 ? newHeight : 0;
-                  cumulativeDy = 0;
-                });
+              cumulativeDy.value -= dy;
+              if (cumulativeDy.value >= discreteStepSize) {
+                var newHeight = height.value + discreteStepSize;
+                height.value = newHeight > 0 ? newHeight : 0;
+                cumulativeDy.value = 0;
+              } else if (cumulativeDy.value <= -discreteStepSize) {
+                var newHeight = height.value - discreteStepSize;
+                height.value = newHeight > 0 ? newHeight : 0;
+                cumulativeDy.value = 0;
               }
+            },
+            onDragEnd: (dx, dy) {
+              updateTextWidget(
+                textElement.id,
+                cumulativeDy: cumulativeDy.value,
+                height: height.value,
+                width: width.value,
+              );
             },
           ),
         ),
         // top right
         Positioned(
-          // top: top - ballDiameter / 2,
-          // left: left + width - ballDiameter / 2,
-          top: top - ballDiameter,
-          left: left + width - ballDiameter,
-          child: !widget.isNotActive
+          top: top.value - ballDiameter,
+          left: left.value + width.value - ballDiameter,
+          child: !isNotActive
               ? Container(
                   width: ballDiameter + 15,
                   height: ballDiameter + 15,
@@ -182,7 +164,7 @@ class _ResizebleWidgetState extends State<DraggableResizableWidget> {
                   ),
                   child: Center(
                     child: IconButton(
-                      onPressed: widget.onPressed,
+                      onPressed: onPressed,
                       icon: const Icon(
                         Icons.edit,
                         color: Colors.white,
@@ -192,177 +174,180 @@ class _ResizebleWidgetState extends State<DraggableResizableWidget> {
                   ),
                 )
               : Container(child: null),
-          //  ManipulatingBall(
-          //   isBallVisible: !widget.isNotActive,
-          //   onDrag: (dx, dy) {
-          //     var mid = (dx + (dy * -1)) / 2;
-          //     cumulativeMid += 2 * mid;
-          //     if (cumulativeMid >= discreteStepSize) {
-          //       setState(() {
-          //         var newHeight = height + discreteStepSize;
-          //         height = newHeight > 0 ? newHeight : 0;
-          //         var newWidth = width + discreteStepSize;
-          //         width = newWidth > 0 ? newWidth : 0;
-          //         cumulativeMid = 0;
-          //       });
-          //     } else if (cumulativeMid <= -discreteStepSize) {
-          //       setState(() {
-          //         var newHeight = height - discreteStepSize;
-          //         height = newHeight > 0 ? newHeight : 0;
-          //         var newWidth = width - discreteStepSize;
-          //         width = newWidth > 0 ? newWidth : 0;
-          //         cumulativeMid = 0;
-          //       });
-          //     }
-          //   },
-          // ),
         ),
         // center right
         Positioned(
-          top: top + height / 2 - ballDiameter / 2,
-          left: left + width - ballDiameter / 2,
+          top: top.value + height.value / 2 - ballDiameter / 2,
+          left: left.value + width.value - ballDiameter / 2,
           child: ManipulatingBall(
-            isBallVisible: !widget.isNotActive,
+            isBallVisible: !isNotActive,
             onDrag: (dx, dy) {
-              cumulativeDx += dx;
+              cumulativeDx.value += dx;
 
-              if (cumulativeDx >= discreteStepSize) {
-                setState(() {
-                  var newWidth = width + discreteStepSize;
-                  width = newWidth > 0 ? newWidth : 0;
-                  cumulativeDx = 0;
-                });
-              } else if (cumulativeDx <= -discreteStepSize) {
-                setState(() {
-                  var newWidth = width - discreteStepSize;
-                  width = newWidth > 0 ? newWidth : 0;
-                  cumulativeDx = 0;
-                });
+              if (cumulativeDx.value >= discreteStepSize) {
+                var newWidth = width.value + discreteStepSize;
+                width.value = newWidth > 0 ? newWidth : 0;
+                cumulativeDx.value = 0;
+              } else if (cumulativeDx.value <= -discreteStepSize) {
+                var newWidth = width.value - discreteStepSize;
+                width.value = newWidth > 0 ? newWidth : 0;
+                cumulativeDx.value = 0;
               }
+            },
+            onDragEnd: (dx, dy) {
+              updateTextWidget(
+                textElement.id,
+                cumulativeDx: cumulativeDx.value,
+                height: height.value,
+                width: width.value,
+              );
             },
           ),
         ),
         // bottom right
         Positioned(
-          top: top + height - ballDiameter / 2,
-          left: left + width - ballDiameter / 2,
+          top: top.value + height.value - ballDiameter / 2,
+          left: left.value + width.value - ballDiameter / 2,
           child: ManipulatingBall(
-            isBallVisible: !widget.isNotActive,
+            isBallVisible: !isNotActive,
             onDrag: (dx, dy) {
               var mid = (dx + dy) / 2;
 
-              cumulativeMid += 2 * mid;
-              if (cumulativeMid >= discreteStepSize) {
-                setState(() {
-                  var newHeight = height + discreteStepSize;
-                  height = newHeight > 0 ? newHeight : 0;
-                  var newWidth = width + discreteStepSize;
-                  width = newWidth > 0 ? newWidth : 0;
-                  cumulativeMid = 0;
-                });
-              } else if (cumulativeMid <= -discreteStepSize) {
-                setState(() {
-                  var newHeight = height - discreteStepSize;
-                  height = newHeight > 0 ? newHeight : 0;
-                  var newWidth = width - discreteStepSize;
-                  width = newWidth > 0 ? newWidth : 0;
-                  cumulativeMid = 0;
-                });
+              cumulativeMid.value += 2 * mid;
+              if (cumulativeMid.value >= discreteStepSize) {
+                var newHeight = height.value + discreteStepSize;
+                height.value = newHeight > 0 ? newHeight : 0;
+                var newWidth = width.value + discreteStepSize;
+                width.value = newWidth > 0 ? newWidth : 0;
+                cumulativeMid.value = 0;
+              } else if (cumulativeMid.value <= -discreteStepSize) {
+                var newHeight = height.value - discreteStepSize;
+                height.value = newHeight > 0 ? newHeight : 0;
+                var newWidth = width.value - discreteStepSize;
+                width.value = newWidth > 0 ? newWidth : 0;
+                cumulativeMid.value = 0;
               }
+            },
+            onDragEnd: (dx, dy) {
+              updateTextWidget(
+                textElement.id,
+                cumulativeMid: cumulativeMid.value,
+                height: height.value,
+                width: width.value,
+              );
             },
           ),
         ),
         // bottom center
         Positioned(
-          top: top + height - ballDiameter / 2,
-          left: left + width / 2 - ballDiameter / 2,
+          top: top.value + height.value - ballDiameter / 2,
+          left: left.value + width.value / 2 - ballDiameter / 2,
           child: ManipulatingBall(
-            isBallVisible: !widget.isNotActive,
+            isBallVisible: !isNotActive,
             onDrag: (dx, dy) {
-              cumulativeDy += dy;
+              cumulativeDy.value += dy;
 
-              if (cumulativeDy >= discreteStepSize) {
-                setState(() {
-                  var newHeight = height + discreteStepSize;
-                  height = newHeight > 0 ? newHeight : 0;
-                  cumulativeDy = 0;
-                });
-              } else if (cumulativeDy <= -discreteStepSize) {
-                setState(() {
-                  var newHeight = height - discreteStepSize;
-                  height = newHeight > 0 ? newHeight : 0;
-                  cumulativeDy = 0;
-                });
+              if (cumulativeDy.value >= discreteStepSize) {
+                var newHeight = height.value + discreteStepSize;
+                height.value = newHeight > 0 ? newHeight : 0;
+                cumulativeDy.value = 0;
+              } else if (cumulativeDy.value <= -discreteStepSize) {
+                var newHeight = height.value - discreteStepSize;
+                height.value = newHeight > 0 ? newHeight : 0;
+                cumulativeDy.value = 0;
               }
+            },
+            onDragEnd: (dx, dy) {
+              updateTextWidget(
+                textElement.id,
+                cumulativeDy: cumulativeDy.value,
+                height: height.value,
+                width: width.value,
+              );
             },
           ),
         ),
         // bottom left
         Positioned(
-          top: top + height - ballDiameter / 2,
-          left: left - ballDiameter / 2,
+          top: top.value + height.value - ballDiameter / 2,
+          left: left.value - ballDiameter / 2,
           child: ManipulatingBall(
-            isBallVisible: !widget.isNotActive,
+            isBallVisible: !isNotActive,
             onDrag: (dx, dy) {
               var mid = ((dx * -1) + dy) / 2;
 
-              cumulativeMid += 2 * mid;
-              if (cumulativeMid >= discreteStepSize) {
-                setState(() {
-                  var newHeight = height + discreteStepSize;
-                  height = newHeight > 0 ? newHeight : 0;
-                  var newWidth = width + discreteStepSize;
-                  width = newWidth > 0 ? newWidth : 0;
-                  cumulativeMid = 0;
-                });
-              } else if (cumulativeMid <= -discreteStepSize) {
-                setState(() {
-                  var newHeight = height - discreteStepSize;
-                  height = newHeight > 0 ? newHeight : 0;
-                  var newWidth = width - discreteStepSize;
-                  width = newWidth > 0 ? newWidth : 0;
-                  cumulativeMid = 0;
-                });
+              cumulativeMid.value += 2 * mid;
+              if (cumulativeMid.value >= discreteStepSize) {
+                var newHeight = height.value + discreteStepSize;
+                height.value = newHeight > 0 ? newHeight : 0;
+                var newWidth = width.value + discreteStepSize;
+                width.value = newWidth > 0 ? newWidth : 0;
+                cumulativeMid.value = 0;
+              } else if (cumulativeMid.value <= -discreteStepSize) {
+                var newHeight = height.value - discreteStepSize;
+                height.value = newHeight > 0 ? newHeight : 0;
+                var newWidth = width.value - discreteStepSize;
+                width.value = newWidth > 0 ? newWidth : 0;
+                cumulativeMid.value = 0;
               }
+            },
+            onDragEnd: (dx, dy) {
+              updateTextWidget(
+                textElement.id,
+                cumulativeMid: cumulativeMid.value,
+                height: height.value,
+                width: width.value,
+              );
             },
           ),
         ),
         //left center
         Positioned(
-          top: top + height / 2 - ballDiameter / 2,
-          left: left - ballDiameter / 2,
+          top: top.value + height.value / 2 - ballDiameter / 2,
+          left: left.value - ballDiameter / 2,
           child: ManipulatingBall(
-            isBallVisible: !widget.isNotActive,
+            isBallVisible: !isNotActive,
             onDrag: (dx, dy) {
-              cumulativeDx -= dx;
+              cumulativeDx.value -= dx;
 
-              if (cumulativeDx >= discreteStepSize) {
-                setState(() {
-                  var newWidth = width + discreteStepSize;
-                  width = newWidth > 0 ? newWidth : 0;
-                  cumulativeDx = 0;
-                });
-              } else if (cumulativeDx <= -discreteStepSize) {
-                setState(() {
-                  var newWidth = width - discreteStepSize;
-                  width = newWidth > 0 ? newWidth : 0;
-                  cumulativeDx = 0;
-                });
+              if (cumulativeDx.value >= discreteStepSize) {
+                var newWidth = width.value + discreteStepSize;
+                width.value = newWidth > 0 ? newWidth : 0;
+                cumulativeDx.value = 0;
+              } else if (cumulativeDx.value <= -discreteStepSize) {
+                var newWidth = width.value - discreteStepSize;
+                width.value = newWidth > 0 ? newWidth : 0;
+                cumulativeDx.value = 0;
               }
+            },
+            onDragEnd: (dx, dy) {
+              updateTextWidget(
+                textElement.id,
+                cumulativeDx: cumulativeDx.value,
+                height: height.value,
+                width: width.value,
+              );
             },
           ),
         ),
         // center center
         Positioned(
-          top: top + height / 2 - ballDiameter / 2,
-          left: left + width / 2 - ballDiameter / 2,
+          top: top.value + height.value / 2 - ballDiameter / 2,
+          left: left.value + width.value / 2 - ballDiameter / 2,
           child: ManipulatingBall(
             isBallVisible: false,
             onDrag: (dx, dy) {
-              setState(() {
-                top = top + dy;
-                left = left + dx;
-              });
+              top.value = top.value + dy;
+              left.value = left.value + dx;
+            },
+            onDragEnd: (dx, dy) {
+              ref.watch(appProvider.notifier).updateTextWidget(
+                    textElement.id,
+                    top: top.value + dy,
+                    left: left.value + dx,
+                    width: width.value,
+                    height: height.value,
+                  );
             },
           ),
         ),
@@ -371,51 +356,52 @@ class _ResizebleWidgetState extends State<DraggableResizableWidget> {
   }
 }
 
-class ManipulatingBall extends StatefulWidget {
+class ManipulatingBall extends HookWidget {
+  const ManipulatingBall({
+    Key? key,
+    required this.onDrag,
+    this.isBallVisible = true,
+    required this.onDragEnd,
+  }) : super(key: key);
   final bool isBallVisible;
-  const ManipulatingBall(
-      {Key? key, required this.onDrag, this.isBallVisible = true})
-      : super(key: key);
-
-  final Function onDrag;
-
-  @override
-  _ManipulatingBallState createState() => _ManipulatingBallState();
-}
-
-class _ManipulatingBallState extends State<ManipulatingBall> {
-  late double initX;
-  late double initY;
-
-  _handleDrag(details) {
-    print(details);
-
-    setState(() {
-      initX = details.globalPosition.dx;
-      initY = details.globalPosition.dy;
-    });
-  }
-
-  _handleUpdate(details) {
-    var dx = details.globalPosition.dx - initX;
-    var dy = details.globalPosition.dy - initY;
-    initX = details.globalPosition.dx;
-    initY = details.globalPosition.dy;
-    widget.onDrag(dx, dy);
-  }
+  final void Function(double, double) onDrag;
+  final void Function(double, double) onDragEnd;
 
   @override
   Widget build(BuildContext context) {
+    final initX = useState<double>(0);
+    final initY = useState<double>(0);
+
+    void _handleDrag(DragStartDetails details) {
+      initX.value = details.globalPosition.dx;
+      initY.value = details.globalPosition.dy;
+    }
+
+    void _handleUpdate(DragUpdateDetails details) {
+      final dx = details.globalPosition.dx - initX.value;
+      final dy = details.globalPosition.dy - initY.value;
+      initX.value = details.globalPosition.dx;
+      initY.value = details.globalPosition.dy;
+      onDrag(dx, dy);
+    }
+
+    void _handleDragEnd(DragEndDetails details) {
+      onDragEnd(
+        details.velocity.pixelsPerSecond.dx,
+        details.velocity.pixelsPerSecond.dy,
+      );
+    }
+
     return GestureDetector(
       onPanStart: _handleDrag,
       onPanUpdate: _handleUpdate,
+      onPanEnd: _handleDragEnd,
       child: Container(
         width: ballDiameter,
         height: ballDiameter,
         decoration: BoxDecoration(
-          color: widget.isBallVisible
-              ? Colors.blue.withOpacity(0.5)
-              : Colors.transparent,
+          color:
+              isBallVisible ? Colors.blue.withOpacity(0.5) : Colors.transparent,
           shape: BoxShape.circle,
         ),
       ),

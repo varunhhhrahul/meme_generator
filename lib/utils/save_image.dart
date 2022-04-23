@@ -7,7 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
 
-Future<Uint8List?> saveImage({
+Future<String?> saveImage({
   bool save = true,
   required BuildContext context,
   required globalKey,
@@ -40,14 +40,14 @@ async {
 //      print(pngBytes);
 //      print(bs64);
 //      setState(() {});
-    if (!save) return pngBytes;
+    if (!save) return null;
     var file = await _saveFile(pngBytes!, context: context);
     if (file.existsSync()) {
       print('Saved');
     } else {
       print('Not Save');
     }
-    return pngBytes;
+    return file.path;
   } catch (e) {
     print(e);
     return null;

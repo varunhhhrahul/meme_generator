@@ -1,38 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:meme_generator/provider/app_provider.dart';
 import 'package:meme_generator/widgets/draggable_resizable_widget.dart';
 
 import '../constants/models/text_element.dart';
 
-class TextWrapper extends HookWidget {
+class TextWrapper extends HookConsumerWidget {
   final TextElement textElement;
   final ValueNotifier<bool> isContainerActive;
   final String textId;
-  final void Function() removeTextWidget;
-  final void Function(
-    String, {
-    double? cumulativeDx,
-    double? cumulativeDy,
-    double? cumulativeMid,
-    double? height,
-    String? id,
-    String? text,
-    double? width,
-    double? top,
-    double? left,
-  }) updateTextWidget;
+
   const TextWrapper({
     Key? key,
     required this.textElement,
     required this.isContainerActive,
     required this.textId,
-    required this.removeTextWidget,
-    required this.updateTextWidget,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final _isNotActive = useState(false);
+    final textWidgets = ref.watch(appProvider).textWidgets;
     final _textController = useTextEditingController(text: 'This is a text');
     // final _currentText = useState('This is a text');
     useEffect(() {
@@ -72,10 +61,14 @@ class TextWrapper extends HookWidget {
                 ElevatedButton(
                   onPressed: () {
                     // _currentText.value = _textController.text;
-                    updateTextWidget(
-                      textId,
-                      text: _textController.text,
-                    );
+                    ref.read(appProvider.notifier).updateTextWidget(
+                          textId,
+                          text: _textController.text,
+                        );
+                    // updateTextWidget(
+                    //   textId,
+                    //   text: _textController.text,
+                    // );
                     Navigator.pop(context);
                   },
                   child: const Text('Update'),
@@ -94,11 +87,13 @@ class TextWrapper extends HookWidget {
       },
       child: DraggableResizableWidget(
         isNotActive: _isNotActive.value,
+        isNotActiveNotifier: _isNotActive,
         textElement: textElement,
         onPressed: _openBottomSheet,
+        index: textWidgets.indexWhere((element) => element.id == textId),
         child: Text(textElement.text),
-        removeTextWidget: removeTextWidget,
-        updateTextWidget: updateTextWidget,
+        widgetTop: textElement.top,
+        widgetLeft: textElement.left,
       ),
     );
   }

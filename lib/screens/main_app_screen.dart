@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meme_generator/helpers/logger.dart';
+import 'package:meme_generator/provider/app_provider.dart';
+import 'package:meme_generator/utils/json_utils.dart';
 import 'package:uuid/uuid.dart';
 
 import '../constants/models/text_element.dart';
@@ -11,72 +14,72 @@ class MainAppScreenArguments {
   MainAppScreenArguments();
 }
 
-class MainAppScreen extends StatefulHookWidget {
+class MainAppScreen extends HookConsumerWidget {
   final MainAppScreenArguments? arguments;
-  const MainAppScreen({
+  MainAppScreen({
     Key? key,
     this.arguments,
   }) : super(key: key);
 
-  @override
-  State<MainAppScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<MainAppScreen> {
   final GlobalKey _globalKey = GlobalKey();
 
   @override
-  Widget build(BuildContext context) {
-    final _textWidgets = useState<List<TextElement>>([]);
+  Widget build(BuildContext context, WidgetRef ref) {
+    // final _textWidgets = useState<List<TextElement>>([]);
+
     final _isContainerActive = useState(false);
-    void addTextWidget() {
-      setState(
-        () {
-          _textWidgets.value.add(
-            TextElement(
-              id: const Uuid().v4(),
-              text: 'This is a text',
-            ),
-          );
-        },
-      );
-    }
+    final selectedBackground = ref.watch(appProvider).selectedBackground;
+    final textWidgets = ref.watch(appProvider).textWidgets;
+    // void addTextWidget() {
+    //   setState(
+    //     () {
+    //       _textWidgets.value.add(
+    //         TextElement(
+    //           id: const Uuid().v4(),
+    //           text: 'This is a text',
+    //         ),
+    //       );
+    //     },
+    //   );
+    // }
 
-    void removeTextWidget(String textId) {
-      setState(() {
-        _textWidgets.value.removeWhere((element) => element.id == textId);
-      });
-    }
+    // void removeTextWidget(String textId) {
+    //   setState(() {
+    //     _textWidgets.value.removeWhere((element) => element.id == textId);
+    //   });
+    // }
 
-    void updateTextWidget(
-      String textId, {
-      String? id,
-      String? text,
-      double? height,
-      double? width,
-      double? cumulativeDy,
-      double? cumulativeDx,
-      double? cumulativeMid,
-      double? top,
-      double? left,
-    }) {
-      logger.d('updateTextWidget: $textId');
-      setState(() {
-        int index =
-            _textWidgets.value.indexWhere((element) => element.id == textId);
-        _textWidgets.value[index] = TextElement.copy(
-          _textWidgets.value[index],
-          cumulativeDx: cumulativeDx,
-          cumulativeDy: cumulativeDy,
-          cumulativeMid: cumulativeMid,
-          width: width,
-          height: height,
-          text: text,
-          top: top,
-          left: left,
-        );
-      });
-    }
+    // TextElement updateTextWidget(
+    //   String textId, {
+    //   String? id,
+    //   String? text,
+    //   double? height,
+    //   double? width,
+    //   double? cumulativeDy,
+    //   double? cumulativeDx,
+    //   double? cumulativeMid,
+    //   double? top,
+    //   double? left,
+    // }) {
+    //   logger.d('updateTextWidget: $textId');
+    //   int index =
+    //       _textWidgets.value.indexWhere((element) => element.id == textId);
+    //   TextElement element = TextElement.copy(
+    //     _textWidgets.value[index],
+    //     cumulativeDx: cumulativeDx,
+    //     cumulativeDy: cumulativeDy,
+    //     cumulativeMid: cumulativeMid,
+    //     width: width,
+    //     height: height,
+    //     text: text,
+    //     top: top,
+    //     left: left,
+    //   );
+    //   setState(() {
+    //     _textWidgets.value[index] = element;
+    //   });
+    //   return element;
+    // }
 
     return Scaffold(
       appBar: AppBar(
@@ -85,10 +88,7 @@ class _HomeScreenState extends State<MainAppScreen> {
       body: RepaintBoundary(
         key: _globalKey,
         child: StackWrapper(
-          textWidgets: _textWidgets,
           isContainerActive: _isContainerActive,
-          removeTextWidget: removeTextWidget,
-          updateTextWidget: updateTextWidget,
         ),
       ),
 
@@ -100,9 +100,18 @@ class _HomeScreenState extends State<MainAppScreen> {
             FloatingActionButton(
               heroTag: 'save-floating-button',
               onPressed: () async {
-                // _isContainerActive.value = true;
+                _isContainerActive.value = true;
                 await Future.delayed(const Duration(milliseconds: 500));
-                saveImage(context: context, globalKey: _globalKey);
+                final path =
+                    await saveImage(context: context, globalKey: _globalKey);
+
+                await addTemplate(
+                  backgroundElement: selectedBackground,
+                  textElements: textWidgets,
+                  path: path,
+                );
+
+                Navigator.of(context).pop();
               },
               tooltip: 'Save',
               child: const Icon(Icons.save),
@@ -110,7 +119,7 @@ class _HomeScreenState extends State<MainAppScreen> {
             FloatingActionButton(
               heroTag: 'add-text-floating-button',
               onPressed: () {
-                addTextWidget();
+                ref.read(appProvider.notifier).addTextWidget();
               },
               tooltip: 'Add Text',
               child: const Icon(Icons.add),

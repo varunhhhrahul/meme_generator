@@ -1,25 +1,30 @@
-class TextElement {
-  final String id;
+import 'package:meme_generator/constants/models/element.dart';
+
+class TextElement extends Element {
   final String text;
-  final double height;
-  final double width;
   final double cumulativeDy;
   final double cumulativeDx;
   final double cumulativeMid;
-  final double top;
-  final double left;
 
   TextElement({
-    required this.id,
+    required String id,
     required this.text,
-    this.height = 100,
-    this.width = 200,
+    double height = 100,
+    double width = 200,
+    ElementType type = ElementType.text,
     this.cumulativeDy = 0,
     this.cumulativeDx = 0,
     this.cumulativeMid = 0,
-    this.top = 20,
-    this.left = 50,
-  });
+    double top = 20,
+    double left = 50,
+  }) : super(
+          id: id,
+          height: height,
+          width: width,
+          top: top,
+          left: left,
+          type: type,
+        );
 
   TextElement.copy(
     TextElement copy, {
@@ -32,6 +37,7 @@ class TextElement {
     double? cumulativeMid,
     double? top,
     double? left,
+    ElementType? type,
   }) : this(
           id: id ?? copy.id,
           text: text ?? copy.text,
@@ -42,19 +48,24 @@ class TextElement {
           cumulativeMid: cumulativeMid ?? copy.cumulativeMid,
           top: top ?? copy.top,
           left: left ?? copy.left,
+          type: type ?? copy.type,
         );
 
+  @override
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'text': text,
-      'height': height,
-      'width': width,
+      'height': height == double.infinity ? 'Infinity' : height,
+      'width': width == double.infinity ? 'Infinity' : width,
       'cumulativeDy': cumulativeDy,
       'cumulativeDx': cumulativeDx,
       'cumulativeMid': cumulativeMid,
       'top': top,
       'left': left,
+      'type': type == ElementType.text
+          ? 'ElementType.text'
+          : 'ElementType.background',
     };
   }
 
@@ -62,13 +73,20 @@ class TextElement {
     return TextElement(
       id: json['id'] ?? '',
       text: json['text'] ?? '',
-      height: json['height']?.toDouble() ?? 100,
-      width: json['width']?.toDouble() ?? 200,
+      height: json['height'] == 'Infinity'
+          ? double.infinity
+          : json['height']?.toDouble() ?? 100,
+      width: json['height'] == 'Infinity'
+          ? double.infinity
+          : json['width']?.toDouble() ?? 200,
       cumulativeDy: json['cumulativeDy']?.toDouble() ?? 0.0,
       cumulativeDx: json['cumulativeDx']?.toDouble() ?? 0.0,
       cumulativeMid: json['cumulativeMid']?.toDouble() ?? 0.0,
       top: json['top']?.toDouble() ?? 20,
       left: json['left']?.toDouble() ?? 50,
+      type: json['type'] == 'ElmentType.text'
+          ? ElementType.text
+          : ElementType.text,
     );
   }
 }
