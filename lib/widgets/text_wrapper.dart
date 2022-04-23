@@ -60,15 +60,11 @@ class TextWrapper extends HookConsumerWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // _currentText.value = _textController.text;
                     ref.read(appProvider.notifier).updateTextWidget(
                           textId,
                           text: _textController.text,
                         );
-                    // updateTextWidget(
-                    //   textId,
-                    //   text: _textController.text,
-                    // );
+
                     Navigator.pop(context);
                   },
                   child: const Text('Update'),

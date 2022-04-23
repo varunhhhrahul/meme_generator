@@ -17,34 +17,33 @@ Future readJson() async {
 
     if (await File('${dir.path}/templates.json').exists()) {
       File file = File('${dir.path}/templates.json');
+
       String jsonString = await file.readAsString();
+
       Map<String, dynamic> json = jsonDecode(jsonString);
-      logger.d('ONE: $json');
+
       List<Template> templates = [];
+
       json['templates'].forEach((e) {
         templates.add(Template.fromJson(e));
       });
 
-      logger.d('ONE-T: $templates');
       return templates;
     } else {
       final String response =
-          // File(Directory.current.absolute.path).readAsStringSync();
           await rootBundle.loadString('assets/data/dummy_data.json');
+
       await File('${dir.path}/templates.json').writeAsString(response);
+
       Map<String, dynamic> json = jsonDecode(response);
-      logger.d('TWO: $json');
+
       List<Template> templates = [];
+
       json['templates'].forEach((e) {
         templates.add(Template.fromJson(e));
       });
-      logger.d('TWO-T: $templates');
       return templates;
     }
-
-    // final data = await json.decode(response);
-
-    // return data['templates'];
   } catch (e) {
     logger.e(e);
   }
@@ -56,10 +55,9 @@ Future<void> addTemplate({
   String? path,
 }) async {
   try {
-    logger.d('Adding template');
     Directory dir = await getApplicationDocumentsDirectory();
     List templates = await readJson();
-    logger.d('Templates: $templates');
+
     templates.add(
       Template(
         id: const Uuid().v4(),
@@ -72,37 +70,31 @@ Future<void> addTemplate({
     final updatedTemplates = templates.map((e) => e.toMap()).toList();
     await File('${dir.path}/templates.json')
         .writeAsString(jsonEncode({'templates': updatedTemplates}));
-
-    // return data['templates'];
   } catch (e) {
     logger.e('Error adding template $e');
   }
 }
 
 Future<void> editTemplate({
+  required String id,
   required BackgroundElement? backgroundElement,
   required List<TextElement> textElements,
   String? path,
 }) async {
   try {
-    logger.d('Editing template');
     Directory dir = await getApplicationDocumentsDirectory();
-    List templates = await readJson();
-    logger.d('Templates: $templates');
-    templates.add(
-      Template(
-        id: const Uuid().v4(),
-        backgroundElement:
-            BackgroundElement.copy(backgroundElement!, id: const Uuid().v4()),
-        textElements: textElements,
-        previewUrl: path,
-      ),
+    List<Template> templates = await readJson();
+    int index = templates.indexWhere((e) => e.id == id);
+    templates[index] = Template.copy(
+      templates[index],
+      backgroundElement:
+          BackgroundElement.copy(backgroundElement!, id: const Uuid().v4()),
+      textElements: textElements,
+      previewUrl: path,
     );
     final updatedTemplates = templates.map((e) => e.toMap()).toList();
     await File('${dir.path}/templates.json')
         .writeAsString(jsonEncode({'templates': updatedTemplates}));
-
-    // return data['templates'];
   } catch (e) {
     logger.e('Error adding template $e');
   }

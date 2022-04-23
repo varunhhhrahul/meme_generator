@@ -2,8 +2,8 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-// import 'package:flutter/rendering.dart';
-
+import 'package:gallery_saver/gallery_saver.dart';
+import 'package:meme_generator/helpers/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
 
@@ -11,115 +11,68 @@ Future<String?> saveImage({
   bool save = true,
   required BuildContext context,
   required globalKey,
-})
-// async {
-//   if (save) {
-//     final status = await Permission.storage.request();
-//     if (status.isGranted) {
-//       final directory = await getApplicationDocumentsDirectory();
-//       final path = '${directory.path}/${DateTime.now().toUtc().toIso8601String()}.png';
-//       final image = await boundary.toImage(pixelRatio: 3.0);
-//       final data = await image.toByteData(format: ui.ImageByteFormat.png);
-//       return data.buffer.asUint8List();
-//     }
-//   }
-//   final image = await boundary.toImage(pixelRatio: 3.0);
-//   final data = await image.toByteData(format: ui.ImageByteFormat.png);
-//   return data.buffer.asUint8List();
-// })
-async {
+  bool edit = false,
+}) async {
   try {
-    print('inside');
-
     RenderRepaintBoundary boundary =
         globalKey.currentContext.findRenderObject();
     ui.Image image = await boundary.toImage(pixelRatio: 3.0);
     ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    var pngBytes = byteData?.buffer.asUint8List();
-//      var bs64 = base64Encode(pngBytes);
-//      print(pngBytes);
-//      print(bs64);
-//      setState(() {});
+    Uint8List? pngBytes = byteData?.buffer.asUint8List();
+
     if (!save) return null;
     var file = await _saveFile(pngBytes!, context: context);
     if (file.existsSync()) {
-      print('Saved');
+      logger.d('file saved');
+      if (!edit) {
+        await GallerySaver.saveImage(file.path);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Image saved to gallery'),
+            duration: Duration(seconds: 1),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Template updated!'),
+            duration: Duration(seconds: 1),
+          ),
+        );
+      }
     } else {
-      print('Not Save');
+      logger.d('file not saved');
     }
     return file.path;
   } catch (e) {
-    print(e);
+    logger.e(e);
     return null;
   }
 }
-
-// _sharePng() async {
-//   var bytes = await _capturePng(save: false);
-//   if (bytes == null) return;
-//   await Share.file(
-//       'Share meme', 'meme.png', bytes.buffer.asUint8List(), 'image/png');
-// }
 
 Future<File> _saveFile(
   List<int> pngBytes, {
   required BuildContext context,
 }) async {
-  // PermissionStatus permission = await PermissionHandler()
-  //     .checkPermissionStatus(PermissionGroup.storage);
-  // if (permission != PermissionStatus.granted) {
-  //   var permissions = await PermissionHandler()
-  //       .requestPermissions([PermissionGroup.storage]);
-  //   permission = permissions[PermissionGroup.storage];
-  //   if (permission != PermissionStatus.granted) {
-  //     await showDialog(
-  //         context: context,
-  //         builder: (context) {
-  //           return AlertDialog(
-  //             title: Text("No storage permissions"),
-  //             content:
-  //                 Text("You have not approved storage permissions, so the "
-  //                     "image cannot be save to the gallery."),
-  //             actions: <Widget>[
-  //               FlatButton(
-  //                 onPressed: () => Navigator.of(context).pop(),
-  //                 child: Text('Cancel'),
-  //               )
-  //             ],
-  //           );
-  //         });
-
-  //     return null;
-  //   }
-  // }
-
-  // showDialog(
-  //     context: context,
-  //     builder: (context) {
-  //       return AlertDialog(
-  //         content: Center(
-  //           child: CircularProgressIndicator(),
-  //         ),
-  //       );
-  //     });
-
   final dir = await getApplicationDocumentsDirectory();
 
   File file = File('${dir.path}/Meme/${DateTime.now().toIso8601String()}.png');
   if (!file.existsSync()) {
     file.createSync(recursive: true);
-    if (file.existsSync())
-      print('Done Create');
-    else
-      print('Ndakonewa');
+    if (file.existsSync()) {
+      logger.d('File updated at ${file.path}');
+    } else {
+      logger.e('File not updated at ${file.path}');
+    }
   }
+
   file.writeAsBytesSync(pngBytes);
-  print(file);
+
   if (file.existsSync()) {
-    print('Saved');
+    logger.d('File Saved');
   } else {
-    print('Agh');
+    logger.d('Failed to save file');
   }
-  // Navigator.of(context).pop();
+
   return file;
 }

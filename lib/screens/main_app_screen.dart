@@ -25,65 +25,35 @@ class MainAppScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final _textWidgets = useState<List<TextElement>>([]);
-
     final _isContainerActive = useState(false);
     final selectedBackground = ref.watch(appProvider).selectedBackground;
     final textWidgets = ref.watch(appProvider).textWidgets;
-    // void addTextWidget() {
-    //   setState(
-    //     () {
-    //       _textWidgets.value.add(
-    //         TextElement(
-    //           id: const Uuid().v4(),
-    //           text: 'This is a text',
-    //         ),
-    //       );
-    //     },
-    //   );
-    // }
-
-    // void removeTextWidget(String textId) {
-    //   setState(() {
-    //     _textWidgets.value.removeWhere((element) => element.id == textId);
-    //   });
-    // }
-
-    // TextElement updateTextWidget(
-    //   String textId, {
-    //   String? id,
-    //   String? text,
-    //   double? height,
-    //   double? width,
-    //   double? cumulativeDy,
-    //   double? cumulativeDx,
-    //   double? cumulativeMid,
-    //   double? top,
-    //   double? left,
-    // }) {
-    //   logger.d('updateTextWidget: $textId');
-    //   int index =
-    //       _textWidgets.value.indexWhere((element) => element.id == textId);
-    //   TextElement element = TextElement.copy(
-    //     _textWidgets.value[index],
-    //     cumulativeDx: cumulativeDx,
-    //     cumulativeDy: cumulativeDy,
-    //     cumulativeMid: cumulativeMid,
-    //     width: width,
-    //     height: height,
-    //     text: text,
-    //     top: top,
-    //     left: left,
-    //   );
-    //   setState(() {
-    //     _textWidgets.value[index] = element;
-    //   });
-    //   return element;
-    // }
+    final templateId = ref.watch(appProvider).templateId;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Meme Generator'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.edit),
+            tooltip: 'Edit Template',
+            onPressed: () async {
+              _isContainerActive.value = true;
+              final path = await saveImage(
+                  context: context, globalKey: _globalKey, edit: true);
+              await editTemplate(
+                id: templateId!,
+                backgroundElement: selectedBackground,
+                textElements: textWidgets,
+                path: path,
+              );
+              ref.read(appProvider.notifier).setTemplateId(null);
+              ref.read(appProvider.notifier).setSelectedBackground(null);
+
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
       ),
       body: RepaintBoundary(
         key: _globalKey,
@@ -93,11 +63,11 @@ class MainAppScreen extends HookConsumerWidget {
       ),
 
       bottomNavigationBar: Container(
-        margin: const EdgeInsets.all(16),
+        margin: const EdgeInsets.all(20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            FloatingActionButton(
+            FloatingActionButton.extended(
               heroTag: 'save-floating-button',
               onPressed: () async {
                 _isContainerActive.value = true;
@@ -110,11 +80,13 @@ class MainAppScreen extends HookConsumerWidget {
                   textElements: textWidgets,
                   path: path,
                 );
-
+                ref.read(appProvider.notifier).setTemplateId(null);
+                ref.read(appProvider.notifier).setSelectedBackground(null);
                 Navigator.of(context).pop();
               },
               tooltip: 'Save',
-              child: const Icon(Icons.save),
+              label: const Text('Save Image'),
+              icon: const Icon(Icons.save),
             ),
             FloatingActionButton(
               heroTag: 'add-text-floating-button',

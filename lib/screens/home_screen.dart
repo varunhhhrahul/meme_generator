@@ -50,6 +50,10 @@ class HomeScreen extends HookConsumerWidget {
                   ref
                       .read(appProvider.notifier)
                       .setTextWidgets(templates[index].textElements);
+
+                  ref.read(appProvider.notifier).setTemplateId(
+                        templates[index].id,
+                      );
                 },
                 child: Stack(
                   children: [
@@ -58,9 +62,9 @@ class HomeScreen extends HookConsumerWidget {
                         borderRadius: BorderRadius.circular(20),
                         image: DecorationImage(
                           image: templates[index].previewUrl != null
-                              ? FileImage(File(
-                                      templates[index].previewUrl as String))
-                                  as ImageProvider
+                              ? FileImage(
+                                  File(templates[index].previewUrl as String),
+                                ) as ImageProvider
                               : NetworkImage(
                                   templates[index].backgroundElement.url,
                                 ),

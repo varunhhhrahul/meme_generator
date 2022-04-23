@@ -12,6 +12,7 @@ class InitialState {
   final BackgroundElement? selectedBackground;
   final List<TextElement> textWidgets;
   final List<Template> templates;
+  final String? templateId;
   final bool loading;
 
   InitialState({
@@ -19,6 +20,7 @@ class InitialState {
     required this.textWidgets,
     required this.loading,
     required this.templates,
+    required this.templateId,
   });
 
   InitialState.copy(
@@ -26,9 +28,11 @@ class InitialState {
     BackgroundElement? selectedBackground,
     List<TextElement>? textWidgets,
     List<Template>? templates,
+    String? templateId,
     bool? loading,
   }) : this(
           selectedBackground: selectedBackground ?? copy.selectedBackground,
+          templateId: templateId ?? copy.templateId,
           textWidgets: textWidgets ?? copy.textWidgets,
           loading: loading ?? copy.loading,
           templates: templates ?? copy.templates,
@@ -42,6 +46,7 @@ class AppProvider extends StateNotifier<InitialState> {
           InitialState(
             loading: false,
             textWidgets: [],
+            templateId: null,
             templates: [],
             selectedBackground: null,
           ),
@@ -59,6 +64,13 @@ class AppProvider extends StateNotifier<InitialState> {
     state = InitialState.copy(
       state,
       templates: templates,
+    );
+  }
+
+  void setTemplateId(String? templateId) {
+    state = InitialState.copy(
+      state,
+      templateId: templateId,
     );
   }
 
@@ -80,6 +92,8 @@ class AppProvider extends StateNotifier<InitialState> {
     state = InitialState.copy(
       state,
       textWidgets: [],
+      // templateId: null,
+      // selectedBackground: null,
     );
   }
 
