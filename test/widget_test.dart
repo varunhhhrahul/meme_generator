@@ -29,7 +29,7 @@ void main() {
     });
   });
 
-  testWidgets('Has Stacked Images in a grid', (WidgetTester tester) async {
+  testWidgets('Has Stack', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.runAsync(() async {
       await tester.pumpWidget(
