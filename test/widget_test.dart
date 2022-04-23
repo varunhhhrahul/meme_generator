@@ -38,7 +38,6 @@ void main() {
         ),
         const Duration(milliseconds: 100),
       );
-      // List<Template> templates = await readJson();
       expect(find.byType(Stack), findsWidgets);
     });
   });
