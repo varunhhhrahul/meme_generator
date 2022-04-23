@@ -73,7 +73,6 @@ class Template {
   }
 
   factory Template.fromJson(Map<String, dynamic> json) {
-    logger.d(json);
     return Template(
       id: json['id'] as String,
       backgroundElement: BackgroundElement.fromJson(

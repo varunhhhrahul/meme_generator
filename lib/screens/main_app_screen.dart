@@ -35,22 +35,30 @@ class MainAppScreen extends HookConsumerWidget {
             icon: const Icon(Icons.edit),
             tooltip: 'Edit Template',
             onPressed: () async {
-              _isContainerActive.value = true;
-              final path = await saveImage(
-                context: context,
-                globalKey: _globalKey,
-                edit: true,
-              );
-              await editTemplate(
-                id: templateId!,
-                backgroundElement: selectedBackground,
-                textElements: textWidgets,
-                path: path,
-              );
-              ref.read(appProvider.notifier).setTemplateId(null);
-              ref.read(appProvider.notifier).setSelectedBackground(null);
+              if (textWidgets.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Please add text to edit template'),
+                  ),
+                );
+              } else {
+                _isContainerActive.value = true;
+                final path = await saveImage(
+                  context: context,
+                  globalKey: _globalKey,
+                  edit: true,
+                );
+                await editTemplate(
+                  id: templateId!,
+                  backgroundElement: selectedBackground,
+                  textElements: textWidgets,
+                  path: path,
+                );
+                ref.read(appProvider.notifier).setTemplateId(null);
+                ref.read(appProvider.notifier).setSelectedBackground(null);
 
-              Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              }
             },
           ),
         ],
@@ -63,38 +71,47 @@ class MainAppScreen extends HookConsumerWidget {
       ),
 
       bottomNavigationBar: Container(
-        margin: const EdgeInsets.all(20),
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             FloatingActionButton.extended(
               heroTag: 'save-floating-button',
               onPressed: () async {
-                _isContainerActive.value = true;
-                await Future.delayed(const Duration(milliseconds: 500));
-                final path =
-                    await saveImage(context: context, globalKey: _globalKey);
+                if (textWidgets.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please add text to save'),
+                    ),
+                  );
+                } else {
+                  _isContainerActive.value = true;
+                  await Future.delayed(const Duration(milliseconds: 500));
+                  final path =
+                      await saveImage(context: context, globalKey: _globalKey);
 
-                await addTemplate(
-                  backgroundElement: selectedBackground,
-                  textElements: textWidgets,
-                  path: path,
-                );
-                ref.read(appProvider.notifier).setTemplateId(null);
-                ref.read(appProvider.notifier).setSelectedBackground(null);
-                Navigator.of(context).pop();
+                  await addTemplate(
+                    backgroundElement: selectedBackground,
+                    textElements: textWidgets,
+                    path: path,
+                  );
+                  ref.read(appProvider.notifier).setTemplateId(null);
+                  ref.read(appProvider.notifier).setSelectedBackground(null);
+                  Navigator.of(context).pop();
+                }
               },
               tooltip: 'Save',
               label: const Text('Save Image'),
               icon: const Icon(Icons.save),
             ),
-            FloatingActionButton(
+            FloatingActionButton.extended(
               heroTag: 'add-text-floating-button',
               onPressed: () {
                 ref.read(appProvider.notifier).addTextWidget();
               },
               tooltip: 'Add Text',
-              child: const Icon(Icons.add),
+              label: const Text('Add Text'),
+              icon: const Icon(Icons.add),
             ),
           ],
         ),

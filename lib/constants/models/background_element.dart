@@ -54,7 +54,6 @@ class BackgroundElement extends Element {
   }
 
   factory BackgroundElement.fromJson(Map<String, dynamic> json) {
-    logger.d(json);
     return BackgroundElement(
       url: json['url'] as String,
       id: json['id'] as String,
