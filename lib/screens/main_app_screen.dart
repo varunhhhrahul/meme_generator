@@ -43,6 +43,7 @@ class MainAppScreen extends HookConsumerWidget {
                 );
               } else {
                 _isContainerActive.value = true;
+                await Future.delayed(const Duration(milliseconds: 500));
                 final path = await saveImage(
                   context: context,
                   globalKey: _globalKey,
