@@ -49,17 +49,11 @@ ThemeData customThemeFoundation = ThemeData(
     backgroundColor: ColorConstants.appBarBackground,
     textTheme: ThemeData.light().textTheme.copyWith(
           headline6: GoogleFonts.poppins(
-              fontSize: 15.0,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 1.0,
-              color: ColorConstants.primary),
-          //  TextStyle(
-          //   fontFamily: 'Sniglet',
-          //   fontSize: 16.0,
-          //   fontWeight: FontWeight.bold,
-          //   letterSpacing: 4.0,
-          //   color: Colors.white,
-          // ),
+            fontSize: 15.0,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 1.0,
+            color: ColorConstants.primary,
+          ),
         ),
   ),
 );

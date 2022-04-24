@@ -23,12 +23,15 @@ class TextWrapper extends HookConsumerWidget {
     final _isNotActive = useState(false);
     final textWidgets = ref.watch(appProvider).textWidgets;
     final _textController = useTextEditingController(text: 'This is a text');
+
     useEffect(() {
       if (_isNotActive.value == false) {
         _isNotActive.value = isContainerActive.value;
       }
       return null;
     }, [isContainerActive.value]);
+
+    //  editable text field in bottom sheet
     void _openBottomSheet() {
       _textController.text = textElement.text;
       showModalBottomSheet<void>(
@@ -79,6 +82,7 @@ class TextWrapper extends HookConsumerWidget {
         isContainerActive.value = false;
         _isNotActive.value = false;
       },
+      // Drag and resize widget
       child: DraggableResizableWidget(
         isNotActive: _isNotActive.value,
         isNotActiveNotifier: _isNotActive,

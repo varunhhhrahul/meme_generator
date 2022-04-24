@@ -7,6 +7,7 @@ import 'package:meme_generator/helpers/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
 
+// Save image to gallery
 Future<String?> saveImage({
   bool save = true,
   required BuildContext context,
@@ -16,15 +17,19 @@ Future<String?> saveImage({
   try {
     RenderRepaintBoundary boundary =
         globalKey.currentContext.findRenderObject();
+    // Converting boundary object to image
     ui.Image image = await boundary.toImage(pixelRatio: 3.0);
     ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     Uint8List? pngBytes = byteData?.buffer.asUint8List();
 
     if (!save) return null;
-    var file = await _saveFile(pngBytes!, context: context);
+
+    File file = await _saveFile(pngBytes!, context: context);
+
     if (file.existsSync()) {
       logger.d('file saved');
       if (!edit) {
+        // Save to gallery
         await GallerySaver.saveImage(file.path);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -50,6 +55,7 @@ Future<String?> saveImage({
   }
 }
 
+// Create an write file to the DocumentDirectory of the app
 Future<File> _saveFile(
   List<int> pngBytes, {
   required BuildContext context,

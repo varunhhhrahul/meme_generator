@@ -3,7 +3,6 @@ import 'package:meme_generator/constants/models/background_element.dart';
 import 'package:meme_generator/constants/models/text_element.dart';
 import 'package:uuid/uuid.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 import '../constants/models/template.dart';
 import '../helpers/logger.dart';
 
@@ -110,10 +109,6 @@ class AppProvider extends StateNotifier<InitialState> {
     );
   }
 
-// void updateCoords(String textId, {
-//   double top,
-//   double left,
-// })
   void removeTextWidget(String id) {
     final int index =
         state.textWidgets.indexWhere((element) => element.id == id);

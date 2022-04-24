@@ -16,9 +16,11 @@ class StackWrapper extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedBackground = ref.watch(appProvider).selectedBackground;
     final textWidgets = ref.watch(appProvider).textWidgets;
+
     useEffect(() {
       return null;
     }, [textWidgets.length]);
+    // Background Container
     return GestureDetector(
       onTap: () => isContainerActive.value = true,
       child: Container(
@@ -35,6 +37,7 @@ class StackWrapper extends HookConsumerWidget {
         ),
         padding: const EdgeInsets.all(8),
         margin: const EdgeInsets.all(8),
+        // Stack of text widgets
         child: Stack(
           children: [
             ...textWidgets

@@ -125,7 +125,7 @@ class DraggableResizableWidget extends HookConsumerWidget {
         Positioned(
           top: top.value - ballDiameter / 2,
           left: left.value + width.value / 2 - ballDiameter / 2,
-          child: ManipulatingBall(
+          child: DraggableBall(
             isBallVisible: !isNotActive,
             onDrag: (dx, dy) {
               cumulativeDy.value -= dy;
@@ -178,7 +178,7 @@ class DraggableResizableWidget extends HookConsumerWidget {
         Positioned(
           top: top.value + height.value / 2 - ballDiameter / 2,
           left: left.value + width.value - ballDiameter / 2,
-          child: ManipulatingBall(
+          child: DraggableBall(
             isBallVisible: !isNotActive,
             onDrag: (dx, dy) {
               cumulativeDx.value += dx;
@@ -207,7 +207,7 @@ class DraggableResizableWidget extends HookConsumerWidget {
         Positioned(
           top: top.value + height.value - ballDiameter / 2,
           left: left.value + width.value - ballDiameter / 2,
-          child: ManipulatingBall(
+          child: DraggableBall(
             isBallVisible: !isNotActive,
             onDrag: (dx, dy) {
               var mid = (dx + dy) / 2;
@@ -241,7 +241,7 @@ class DraggableResizableWidget extends HookConsumerWidget {
         Positioned(
           top: top.value + height.value - ballDiameter / 2,
           left: left.value + width.value / 2 - ballDiameter / 2,
-          child: ManipulatingBall(
+          child: DraggableBall(
             isBallVisible: !isNotActive,
             onDrag: (dx, dy) {
               cumulativeDy.value += dy;
@@ -270,7 +270,7 @@ class DraggableResizableWidget extends HookConsumerWidget {
         Positioned(
           top: top.value + height.value - ballDiameter / 2,
           left: left.value - ballDiameter / 2,
-          child: ManipulatingBall(
+          child: DraggableBall(
             isBallVisible: !isNotActive,
             onDrag: (dx, dy) {
               var mid = ((dx * -1) + dy) / 2;
@@ -304,7 +304,7 @@ class DraggableResizableWidget extends HookConsumerWidget {
         Positioned(
           top: top.value + height.value / 2 - ballDiameter / 2,
           left: left.value - ballDiameter / 2,
-          child: ManipulatingBall(
+          child: DraggableBall(
             isBallVisible: !isNotActive,
             onDrag: (dx, dy) {
               cumulativeDx.value -= dx;
@@ -333,7 +333,7 @@ class DraggableResizableWidget extends HookConsumerWidget {
         Positioned(
           top: top.value + height.value / 2 - ballDiameter / 2,
           left: left.value + width.value / 2 - ballDiameter / 2,
-          child: ManipulatingBall(
+          child: DraggableBall(
             isBallVisible: false,
             onDrag: (dx, dy) {
               top.value = top.value + dy;
@@ -355,8 +355,8 @@ class DraggableResizableWidget extends HookConsumerWidget {
   }
 }
 
-class ManipulatingBall extends HookWidget {
-  const ManipulatingBall({
+class DraggableBall extends HookWidget {
+  const DraggableBall({
     Key? key,
     required this.onDrag,
     this.isBallVisible = true,

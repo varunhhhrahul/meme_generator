@@ -1,16 +1,49 @@
-# meme_generator
+# Meme Generator
 
-A new Flutter project.
+A meme generator app build for Blend.
 
-## Getting Started
+## APK
 
-This project is a starting point for a Flutter application.
+## To run the app
 
-A few resources to get you started if this is your first Flutter project:
+- Clone the repo.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Open the project folder.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- In the terminal, run:
+
+```dart
+
+flutter pub get
+
+```
+
+- Run the app:
+
+```dart
+
+flutter run
+
+```
+
+- Select an Android or Ios device and you are good to go.
+
+## Features
+
+- Generate memes from a list of existing templates.
+
+- Edit existing templates for memes.
+
+- Save memes to the gallery.
+
+- Add new templates.
+
+## Demo
+
+![Meme](https://user-images.githubusercontent.com/44650484/164968252-1612054f-f726-4b69-a4d8-c847ba234250.gif)
+
+## Tech Stack
+
+- Flutter
+- Riverpod for state management
+- Flutter Hooks

@@ -70,7 +70,6 @@ class MainAppScreen extends HookConsumerWidget {
           isContainerActive: _isContainerActive,
         ),
       ),
-
       bottomNavigationBar: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         child: Row(
@@ -117,7 +116,6 @@ class MainAppScreen extends HookConsumerWidget {
           ],
         ),
       ),
-      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

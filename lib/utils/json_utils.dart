@@ -11,6 +11,7 @@ import 'package:uuid/uuid.dart';
 
 import '../constants/models/text_element.dart';
 
+// Get Json data from the assets folder and store it into DocumentDirectory of the app
 Future readJson() async {
   try {
     Directory dir = await getApplicationDocumentsDirectory();
@@ -49,6 +50,7 @@ Future readJson() async {
   }
 }
 
+//  Append new template to the json file in the DocumentDirectory of the app
 Future<void> addTemplate({
   required BackgroundElement? backgroundElement,
   required List<TextElement> textElements,
@@ -75,6 +77,7 @@ Future<void> addTemplate({
   }
 }
 
+// Update template in the json file in the DocumentDirectory of the app
 Future<void> editTemplate({
   required String id,
   required BackgroundElement? backgroundElement,
