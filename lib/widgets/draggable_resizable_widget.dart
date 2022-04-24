@@ -3,7 +3,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meme_generator/constants/models/text_element.dart';
 import 'package:meme_generator/provider/app_provider.dart';
-
 import '../constants/models/text_element.dart';
 
 const ballDiameter = 15.0;
@@ -130,11 +129,11 @@ class DraggableResizableWidget extends HookConsumerWidget {
             onDrag: (dx, dy) {
               cumulativeDy.value -= dy;
               if (cumulativeDy.value >= discreteStepSize) {
-                var newHeight = height.value + discreteStepSize;
+                double newHeight = height.value + discreteStepSize;
                 height.value = newHeight > 0 ? newHeight : 0;
                 cumulativeDy.value = 0;
               } else if (cumulativeDy.value <= -discreteStepSize) {
-                var newHeight = height.value - discreteStepSize;
+                double newHeight = height.value - discreteStepSize;
                 height.value = newHeight > 0 ? newHeight : 0;
                 cumulativeDy.value = 0;
               }
@@ -184,11 +183,11 @@ class DraggableResizableWidget extends HookConsumerWidget {
               cumulativeDx.value += dx;
 
               if (cumulativeDx.value >= discreteStepSize) {
-                var newWidth = width.value + discreteStepSize;
+                double newWidth = width.value + discreteStepSize;
                 width.value = newWidth > 0 ? newWidth : 0;
                 cumulativeDx.value = 0;
               } else if (cumulativeDx.value <= -discreteStepSize) {
-                var newWidth = width.value - discreteStepSize;
+                double newWidth = width.value - discreteStepSize;
                 width.value = newWidth > 0 ? newWidth : 0;
                 cumulativeDx.value = 0;
               }
@@ -210,19 +209,19 @@ class DraggableResizableWidget extends HookConsumerWidget {
           child: DraggableBall(
             isBallVisible: !isNotActive,
             onDrag: (dx, dy) {
-              var mid = (dx + dy) / 2;
+              double mid = (dx + dy) / 2;
 
               cumulativeMid.value += 2 * mid;
               if (cumulativeMid.value >= discreteStepSize) {
-                var newHeight = height.value + discreteStepSize;
+                double newHeight = height.value + discreteStepSize;
                 height.value = newHeight > 0 ? newHeight : 0;
-                var newWidth = width.value + discreteStepSize;
+                double newWidth = width.value + discreteStepSize;
                 width.value = newWidth > 0 ? newWidth : 0;
                 cumulativeMid.value = 0;
               } else if (cumulativeMid.value <= -discreteStepSize) {
-                var newHeight = height.value - discreteStepSize;
+                double newHeight = height.value - discreteStepSize;
                 height.value = newHeight > 0 ? newHeight : 0;
-                var newWidth = width.value - discreteStepSize;
+                double newWidth = width.value - discreteStepSize;
                 width.value = newWidth > 0 ? newWidth : 0;
                 cumulativeMid.value = 0;
               }
@@ -247,11 +246,11 @@ class DraggableResizableWidget extends HookConsumerWidget {
               cumulativeDy.value += dy;
 
               if (cumulativeDy.value >= discreteStepSize) {
-                var newHeight = height.value + discreteStepSize;
+                double newHeight = height.value + discreteStepSize;
                 height.value = newHeight > 0 ? newHeight : 0;
                 cumulativeDy.value = 0;
               } else if (cumulativeDy.value <= -discreteStepSize) {
-                var newHeight = height.value - discreteStepSize;
+                double newHeight = height.value - discreteStepSize;
                 height.value = newHeight > 0 ? newHeight : 0;
                 cumulativeDy.value = 0;
               }
@@ -273,19 +272,19 @@ class DraggableResizableWidget extends HookConsumerWidget {
           child: DraggableBall(
             isBallVisible: !isNotActive,
             onDrag: (dx, dy) {
-              var mid = ((dx * -1) + dy) / 2;
+              double mid = ((dx * -1) + dy) / 2;
 
               cumulativeMid.value += 2 * mid;
               if (cumulativeMid.value >= discreteStepSize) {
-                var newHeight = height.value + discreteStepSize;
+                double newHeight = height.value + discreteStepSize;
                 height.value = newHeight > 0 ? newHeight : 0;
-                var newWidth = width.value + discreteStepSize;
+                double newWidth = width.value + discreteStepSize;
                 width.value = newWidth > 0 ? newWidth : 0;
                 cumulativeMid.value = 0;
               } else if (cumulativeMid.value <= -discreteStepSize) {
-                var newHeight = height.value - discreteStepSize;
+                double newHeight = height.value - discreteStepSize;
                 height.value = newHeight > 0 ? newHeight : 0;
-                var newWidth = width.value - discreteStepSize;
+                double newWidth = width.value - discreteStepSize;
                 width.value = newWidth > 0 ? newWidth : 0;
                 cumulativeMid.value = 0;
               }
@@ -310,11 +309,11 @@ class DraggableResizableWidget extends HookConsumerWidget {
               cumulativeDx.value -= dx;
 
               if (cumulativeDx.value >= discreteStepSize) {
-                var newWidth = width.value + discreteStepSize;
+                double newWidth = width.value + discreteStepSize;
                 width.value = newWidth > 0 ? newWidth : 0;
                 cumulativeDx.value = 0;
               } else if (cumulativeDx.value <= -discreteStepSize) {
-                var newWidth = width.value - discreteStepSize;
+                double newWidth = width.value - discreteStepSize;
                 width.value = newWidth > 0 ? newWidth : 0;
                 cumulativeDx.value = 0;
               }

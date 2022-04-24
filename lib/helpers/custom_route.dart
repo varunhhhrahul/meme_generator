@@ -18,7 +18,7 @@ class CustomRoute<T> extends MaterialPageRoute<T> {
   }
 }
 
-// For name routes
+// For named routes
 class CustomPageTransitionBuilder extends PageTransitionsBuilder {
   @override
   Widget buildTransitions<T>(
@@ -28,17 +28,17 @@ class CustomPageTransitionBuilder extends PageTransitionsBuilder {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
-    var begin = const Offset(0.0, 1.0);
+    Offset begin = const Offset(0.0, 1.0);
 
-    var end = Offset.zero;
+    Offset end = Offset.zero;
 
-    var tween = Tween(begin: begin, end: end).chain(
+    Animatable<Offset> tween = Tween(begin: begin, end: end).chain(
       CurveTween(
         curve: Curves.easeOutCubic,
       ),
     );
 
-    var offsetAnimation = animation.drive(tween);
+    Animation<Offset> offsetAnimation = animation.drive(tween);
 
     if (route.settings.name == '/') {
       return child;

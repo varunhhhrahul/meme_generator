@@ -4,6 +4,12 @@ A meme generator app build for Blend.
 
 ## APK
 
+[Meme Generator APK](https://drive.google.com/file/d/1rEy6d9rVcz6UoUEgtwUo-9JXT-I5oD13/view?usp=sharing)
+
+## Video
+
+[Demo Video](https://drive.google.com/file/d/1we1-Ot5ucjnkXFndRd_sBfbDnxKLIx2c/view?usp=sharing)
+
 ## To run the app
 
 - Clone the repo.
@@ -14,7 +20,11 @@ A meme generator app build for Blend.
 
 ```dart
 
+
+
 flutter pub get
+
+
 
 ```
 
@@ -22,7 +32,11 @@ flutter pub get
 
 ```dart
 
+
+
 flutter run
+
+
 
 ```
 
@@ -41,9 +55,3 @@ flutter run
 ## Demo
 
 ![Meme](https://user-images.githubusercontent.com/44650484/164968252-1612054f-f726-4b69-a4d8-c847ba234250.gif)
-
-## Tech Stack
-
-- Flutter
-- Riverpod for state management
-- Flutter Hooks

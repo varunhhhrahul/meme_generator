@@ -160,7 +160,7 @@ final appProvider = StateNotifierProvider<AppProvider, InitialState>(
   (
     StateNotifierProviderRef<AppProvider, InitialState> ref,
   ) {
-    var mounted = true;
+    bool mounted = true;
     ref.onDispose(() => mounted = false);
     logger.d('App Provider: $mounted');
     return AppProvider();

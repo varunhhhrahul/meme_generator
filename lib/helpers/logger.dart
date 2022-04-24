@@ -1,6 +1,6 @@
 import 'package:logger/logger.dart';
 
-var logger = Logger(
+Logger logger = Logger(
   // filter:LogFilter 'W/ample.sixth_ap(16264)' ,
   printer: PrettyPrinter(
       methodCount: 2, // number of method calls to be displayed
