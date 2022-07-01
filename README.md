@@ -1,6 +1,6 @@
 # Meme Generator
 
-A meme generator app build for Blend.
+A meme template generator app built in flutter.
 
 ## APK
 
