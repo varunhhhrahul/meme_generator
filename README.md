@@ -19,25 +19,13 @@ A meme template generator app built in flutter.
 - In the terminal, run:
 
 ```dart
-
-
-
 flutter pub get
-
-
-
 ```
 
 - Run the app:
 
 ```dart
-
-
-
 flutter run
-
-
-
 ```
 
 - Select an Android or Ios device and you are good to go.
